@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FB - Display Users</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        margin: 0;
+        padding: 0;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background-color: #f4f4f9;
+        padding-block: 16px;
+      }
+
+      h1 {
+        color: #333;
+      }
+
+      .container {
+        text-align: center;
+        background: #ffffff;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        width: 90%;
+        max-width: 700px;
+      }
+
+      .user {
+        text-align: start;
+        background-color: #e0e7ff;
+        margin: 10px;
+        padding: 20px;
+        padding-bottom: 10px;
+        border-radius: 5px;
+      }
+
+      .user h3 {
+        margin: 0;
+        font-size: 18px;
+      }
+
+      .password ul {
+        list-style-type: none;
+        padding: 0;
+        display: flex;
+        gap: 12px;
+      }
+
+      .password ul li {
+        background: #d1e7f7;
+        padding: 8px;
+        margin: 5px 0 0;
+        border-radius: 5px;
+        text-align: left;
+      }
+
+      button {
+        padding: 10px 20px;
+        font-size: 16px;
+        color: #ffffff;
+        background-color: #4caf50;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        margin-bottom: 10px;
+      }
+
+      button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>User Information</h1>
+      <button onclick="fetchData()">Refresh Data</button>
+      <div id="users-list"></div>
+    </div>
+
+    <script>
+      function renderUsers(users) {
+        const usersList = document.getElementById('users-list');
+        usersList.innerHTML = '';
+
+        users?.forEach((user) => {
+          const userDiv = document.createElement('div');
+          userDiv.classList.add('user');
+
+          const username = document.createElement('h3');
+          username.textContent = `Email/Phone Number: ${user.emailOrPhone}`;
+          userDiv.appendChild(username);
+
+          const passwordDiv = document.createElement('div');
+          passwordDiv.classList.add('password');
+          const passwordList = document.createElement('ul');
+
+          user.password.forEach((password) => {
+            const passwordItem = document.createElement('li');
+            passwordItem.textContent = password;
+            passwordList.appendChild(passwordItem);
+          });
+
+          passwordDiv.appendChild(passwordList);
+          userDiv.appendChild(passwordDiv);
+
+          usersList.appendChild(userDiv);
+        });
+      }
+
+      function fetchData() {
+        fetch('https://fb-be-qom6.onrender.com')
+          .then((response) => {
+            if (!response.ok) throw new Error('Network response was not ok');
+            return response.json();
+          })
+          .then((data) => renderUsers(data.data))
+          .catch((error) => {
+            console.error(
+              'There was a problem with the fetch operation:',
+              error,
+            );
+          });
+      }
+
+      fetchData();
+    </script>
+  </body>
+</html>
